@@ -2,9 +2,8 @@
 
 double factorial(unsigned int n) {
     double result = n;
-    while (n > 0) {
-        result *= n;
-        n--;
+    while (n > 1) {
+        result *= --n;
     }
     return result;
 }
