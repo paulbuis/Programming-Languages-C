@@ -104,11 +104,132 @@ The `read()` function could theoretically be used instead of the call to `scanf(
 
 ### Level 0: Using a growing array with indices
 
+#### Main Program Source Code
+
+```C
+#include <stdio.h>
+#include "intseq.h"
+
+struct intSeq readInts();
+double average(struct intSeq);
+
+int main(int argc, char** argv) {
+    struct intSeq seq = readInts();
+
+    double a = average(seq);
+    printf("Average: %f\n", average(seq));
+
+    return 0;
+}
+
+struct intSeq readInts() {
+    struct intSeq seq = newIntSeq();
+    int count = 0;
+    int value;
+    char buffer[128];
+    while (fgets(buffer, 128, stdin) != NULL) {
+        if (sscanf(buffer, "%d", &value) != 1) {
+            break;
+        }
+        intSeqAdd(&seq, value);
+    }
+    return seq;
+}
+
+double average(struct intSeq seq) {
+    int index;
+    int sum = 0;
+    for (index = 0; index < seq.length; index++) {
+        sum += seq.data[index];
+    }
+    return ((double)sum)/seq.length;
+}
+```
 
 
+
+#### intseq.h Header File
+
+```C
+struct intSeq {
+    int length;
+    int capacity;
+    int* data;
+};
+
+extern struct intSeq newIntSeq();
+
+extern void intSeqAdd(struct intSeq* pis, int newValue);
+```
+
+
+
+#### intseq.c Separately Compiled Source File
+```C
+#include <stdlib.h>
+#include "intseq.h"
+
+struct intSeq newIntSeq() {
+    struct intSeq seq;
+    seq.length = 0;
+    seq.capacity = 4;
+    seq.data = (int*)malloc(4*sizeof(int));
+    return seq;
+}
+
+void intSeqAdd(struct intSeq* pis, int newValue) {
+    int* newData;
+    int index;
+    if (pis->length == pis->capacity - 1) {
+        newData = (int*)malloc(2 * pis->capacity * sizeof(int));
+        pis->capacity *= 2;
+        for (index = 0; index < pis->length; index++) {
+            newData[index] = pis->data[index];
+        }
+        free(pis->data);
+        pis->data = newData;
+    }
+
+    pis->data[pis->length++] = newValue;
+}
+```
+
+#### Makefile
+
+```
+CC=gcc
+CCFLAGS=-O3
+
+all: kata2-0 kata2-1
+
+kata2-0: kata2-0.o intseq.o
+	$(CC) $(CCFLAGS) kata2-0.o intseq.o -o kata2-0
+
+intseq.o: intseq.c intseq.h
+kata2-0.o: kata2-0.c intseq.h
+
+clean:
+	rm -f kata2-0 *.o
+```
 
 ### Level 1: Using a growing array with pointers
-`
+
+Replace the `average()` function from the Level 0 version of this kata with:
+
+```C
+double average(struct intSeq seq) {
+    int sum = 0;
+    int *p = seq.data;
+    int *pEnd = seq.data + seq.length;
+    while  (p < pEnd) {
+        sum += *p;
+        p++;
+    }
+    return ((double)sum)/seq.length;
+}
+```
+
+Note that the syntax `a[i]` is "syntactic sugar" for `*(a+i)` since arrays are represented by a pointer to their start. Pointer addition is automatically scaled by the size of the array elements. This code does pointer arithmetic and pointer comparison. Note that since arrays do not know their own length in C, there is no way for the compiler to automatically do bounds checking on the index. If the C code were not run through an optimizer, this code might be marginally faster than the code using indexed arrays. An optimizer would probably also unroll and vectorize the loop generating inhumanly complex code.
 
 ## Kata 3: Factiorial Function
 
