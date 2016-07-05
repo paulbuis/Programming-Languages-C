@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <time.h>
 
 double average(int, int, int);
 int read(int*, int*, int*);
