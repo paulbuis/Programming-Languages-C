@@ -138,16 +138,13 @@ int main(int argc, char** argv) {
 
 ### Level 1: Non-recursive Implementation
 
-Warning: This looks buggy!
-
 ```C
 #include <stdio.h>
 
 double factorial(unsigned int n) {
     double result = n;
-    while (n > 0) {
-        result *= n;
-        n--;
+    while (n > 1) {
+        result *= --n;
     }
     return result;
 }
@@ -163,6 +160,10 @@ int main(int argc, char** argv) {
     return 0;
 }
 ```
+
+As in many languages that imitate C, the syntax `a *= b` is simply shorthand for `a = a * b`
+
+Note carefully that `--n` ("pre-decrement:" decrement, then use decremented value) is very different than `n--` ("post decrement:" use undecremented value, then decrement). To avoid confusion, I normally only use the increment/decrement operators when they are isolated, not as part of a more complex expression.
 
 ## Kata 2: Fibonacci Function
 
@@ -193,7 +194,7 @@ int main(int argc, char** argv) {
     return 0;
 }
 ```
-### Level 1: Non-Recurive Implementation
+### Level 1: Non-Recursive Implementation
 
 ```C
 #include <stdio.h>
