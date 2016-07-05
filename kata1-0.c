@@ -20,10 +20,10 @@ double average(int x, int y, int z) {
 
 int read(int *px, int *py, int* pz) {
     int scanCount = scanf("%d", px);
-    if (scanCount != 1) return 1;
+    if (scanCount != 1) return 0;
     scanCount = scanf("%d", py);
-    if (scanCount != 1) return 2;
+    if (scanCount != 1) return 1;
     scanCount = scanf("%d", pz);
-    if (scanCount != 1) return 3;
-    return 0;
+    if (scanCount != 1) return 2;
+    return 3;
 }
