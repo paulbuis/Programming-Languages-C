@@ -50,3 +50,44 @@ This example is much more involved. The `time.h` header file includes definition
 
 `printf()` is using the `%s` formatting directive to print out a string.
 
+## Kata 1: Compute the average of 3 numbers using console I/O
+
+```C
+#include <stdio.h>
+
+double average(int, int, int);
+int read(int*, int*, int*);
+
+int main(int argc, char** argv) {
+    int a, b, c;
+    if (scanf("%d %d %d", &a, &b, &c) == 3) {
+        printf("Average: %f\n", average(a, b, c));
+    }
+    else {
+        printf("Error reading input values");
+    }
+    return 0;
+}
+
+double average(int x, int y, int z) {
+    return (x+y+z)/3.0;
+}
+
+int read(int *px, int *py, int* pz) {
+    int scanCount = scanf("%d", px);
+    if (scanCount != 1) return 0;
+    scanCount = scanf("%d", py);
+    if (scanCount != 1) return 1;
+    scanCount = scanf("%d", pz);
+    if (scanCount != 1) return 2;
+    return 3;
+}
+```
+
+Here we see how to write functions in the same file as `main()`. Functions must be declared before they are used. Here we insert the function declarations as "prototypes" before `main()` and the function definitions after `main()`. It is also legal to have the function definitions also serve as function declarations by locating them in the file before their first use.
+
+The `scanf()` function, like the `printf()` function is "varadic," meaning it takes a variable number of arguements. Both of them use the same set of formatting directives. Here, we read in three integers in decimal format from standard input and write out a floating point number to standard outuput. Since `scanf()` must modify values, it is given the addresses of the variables it needs to modify. `scanf()` prints out the number of values it read in, which should be 3 in this case. C library functions normally return status information which needs to be checked.
+
+The function `average()` illustrates "mixed mode" arithmetic where the type of the sum is automatically "promoted" to the type `double` which is the type of the numeric literal `3.0`
+
+The `read()` function could theoretically be used instead of the call to `scanf()` in `main()`. Depending on the implementation of the I/O library, even having a function with the name `read` could be a problem. Under the hood, `scanf()` will indirectly call an OS function which is also called `read`. C does not allow two functions with the same name in the same program (function name "overloading"). Languages like C++ and Java do allow function overloading and distinguish between same-name functions based on the number and type of their arguments. The GNU C compiler (GCC) and its standard library "GlibC" are structured to avoid this problem for this particular function name.
