@@ -20,6 +20,14 @@ The program begins in the function named `main` which, by convention, returns an
 
 The `printf` function is given a string literal ending in a "newline" character indicated by the "escape sequence" of `\n`
 
+
+    gcc -o kata0 kata0-0.c
+    ./kata0-0
+
+Use the above gcc command line to compile and link the kata0-0.c source file, creating a new kata0-0 executable.
+To run an executable located in the current directory in a standard Linux system, prefix the name of the executable with ./
+
+
 ### Level 1: Print the time of day
 
 ```C
@@ -91,3 +99,139 @@ The `scanf()` function, like the `printf()` function is "varadic," meaning it ta
 The function `average()` illustrates "mixed mode" arithmetic where the type of the sum is automatically "promoted" to the type `double` which is the type of the numeric literal `3.0`
 
 The `read()` function could theoretically be used instead of the call to `scanf()` in `main()`. Depending on the implementation of the I/O library, even having a function with the name `read` could be a problem. Under the hood, `scanf()` will indirectly call an OS function which is also called `read`. C does not allow two functions with the same name in the same program (function name "overloading"). Languages like C++ and Java do allow function overloading and distinguish between same-name functions based on the number and type of their arguments. The GNU C compiler (GCC) and its standard library "GlibC" are structured to avoid this problem for this particular function name.
+
+## Kata 2: Finding Average of Arbitrary Size Sequence of Integers
+
+### Level 0: Using a growing array with indices
+
+
+
+
+### Level 1: Using a growing array with pointers
+`
+
+## Kata 3: Factiorial Function
+
+### Level 0: Recursive Implementation
+
+```C
+#include <stdio.h>
+
+double factorial(unsigned int n) {
+    if (n == 0) {
+       return 1.0;
+    }
+    return n*factorial(n-1);
+}
+
+
+int main(int argc, char** argv) {
+    printf(" 10!= %20g\n", factorial(10));
+    printf(" 20!= %20g\n", factorial(20));
+    printf(" 40!= %20g\n", factorial(40));
+    printf(" 80!= %20g\n", factorial(80));
+    printf("160!= %20g\n", factorial(160));
+    printf("200!= %20g\n", factorial(200));
+    return 0;
+}
+```
+
+### Level 1: Non-recursive Implementation
+
+Warning: This looks buggy!
+
+```C
+#include <stdio.h>
+
+double factorial(unsigned int n) {
+    double result = n;
+    while (n > 0) {
+        result *= n;
+        n--;
+    }
+    return result;
+}
+
+
+int main(int argc, char** argv) {
+    printf(" 10!= %20g\n", factorial(10));
+    printf(" 20!= %20g\n", factorial(20));
+    printf(" 40!= %20g\n", factorial(40));
+    printf(" 80!= %20g\n", factorial(80));
+    printf("160!= %20g\n", factorial(160));
+    printf("200!= %20g\n", factorial(200));
+    return 0;
+}
+```
+
+## Kata 2: Fibonacci Function
+
+### Level 0: Recursive Implementation
+
+```C
+#include <stdio.h>
+
+long unsigned fib(unsigned int n) {
+    if (n <= 1) {
+        return n;
+    }
+    return fib(n-1) + fib(n-2);
+}
+
+
+int main(int argc, char** argv) {
+    printf("fib( 0)= %12lu\n", fib(0));
+    printf("fib( 1)= %12lu\n", fib(1));
+    printf("fib( 2)= %12lu\n", fib(2));
+    printf("fib( 3)= %12lu\n", fib(3));
+    printf("fib( 4)= %12lu\n", fib(4));
+    printf("fib( 5)= %12lu\n", fib(5));
+    printf("fib(10)= %12lu\n", fib(10));
+    printf("fib(30)= %12lu\n", fib(30));
+    printf("fib(40)= %12lu\n", fib(40));
+    printf("fib(50)= %12lu\n", fib(50));
+    return 0;
+}
+```
+### Level 1: Non-Recurive Implementation
+
+```C
+#include <stdio.h>
+
+long unsigned fib(unsigned int n) {
+    long unsigned a = 0;
+    long unsigned b = 1;
+    long unsigned t;
+    unsigned int i;
+    if (n <= 1) {
+        return n;
+    }
+    for (i=0; i<n; i++) {
+	t = a;
+        a = b;
+	b += t;
+    }
+   
+    return a;
+}
+
+
+int main(int argc, char** argv) {
+    printf("fib( 0)= %20lu\n", fib(0));
+    printf("fib( 1)= %20lu\n", fib(1));
+    printf("fib( 2)= %20lu\n", fib(2));
+    printf("fib( 3)= %20lu\n", fib(3));
+    printf("fib( 4)= %20lu\n", fib(4));
+    printf("fib( 5)= %20lu\n", fib(5));
+    printf("fib(10)= %20lu\n", fib(10));
+    printf("fib(30)= %20lu\n", fib(30));
+    printf("fib(40)= %20lu\n", fib(40));
+    printf("fib(50)= %20lu\n", fib(50));
+
+    printf("fib(90)= %20lu\n", fib(90));
+    printf("fib(93)= %20lu\n", fib(93));
+    printf("fib(94)= %20lu\n", fib(94));
+
+   
+    return 0;
+}
