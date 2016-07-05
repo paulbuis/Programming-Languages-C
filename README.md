@@ -18,7 +18,7 @@ This example shows the basic structure of a C program. Declarations of functions
 
 The program begins in the function named `main` which, by convention, returns an integer exit status, with 0 indicating a normal exit.
 
-The `printf` function is given a string literal ending in a "newline" character indicated by the "escape sequence" of `\n`
+The [`printf`](http://www.tutorialspoint.com/c_standard_library/c_function_printf.htm) function is given a string literal ending in a "newline" character indicated by the "escape sequence" of `\n`
 
 
     gcc -o kata0 kata0-0.c
@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 }
 ```
 
-This example is much more involved. The `time.h` header file includes definitions of the types `time_t` and `struct tm` as well as the functions `time()`,`localtime()` and `strftime()`
+This example is much more involved. The [`time.h`](http://www.tutorialspoint.com/c_standard_library/time_h.htm) header file includes definitions of the types `time_t` and `struct tm` as well as the functions `time()`,`localtime()` and `strftime()`
 
 `time()` is given the address of `t` and modifies the value of `t` to hold the number of seconds since the beginning of the epoch (January 1, 1970).
 
@@ -193,6 +193,16 @@ void intSeqAdd(struct intSeq* pis, int newValue) {
     pis->data[pis->length++] = newValue;
 }
 ```
+
+Here we use the standard technique of growing an [dynamic array](https://en.wikipedia.org/wiki/Dynamic_array) by exponentially increasing the capacity. This gives worst case performance of O(N) since the array ocassionally needs to be copied. However, on average it takes only constant time as can be shown with [amortized analysis](https://en.wikipedia.org/wiki/Amortized_analysis). Memory is allocated off the [heap](https://en.wikipedia.org/wiki/Memory_management) with [malloc](https://en.wikipedia.org/wiki/C_dynamic_memory_allocation) and returned to the heap for recycling with free. C does not support [Garbage Collection](https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)) or [Automatic Reference Counting](https://en.wikipedia.org/wiki/Automatic_Reference_Counting) leading to many memory management errors in C programs.
+
+For faster copying of large chunks of contiguous data, the loop can be replaced with the line
+
+```C
+        memcpy(newData, pis->data, pis->length*sizeof(int));
+```
+
+Using `memcpy()` would also require a `#include <string.h>` directive at the beginning of the file. [memcpy](http://www.tutorialspoint.com/c_standard_library/c_function_memcpy.htm) is typically implemented in assembly language to optimize for pointer alignment and the optimum number of bytes to move per instruction. On a 64-bit machine, for example, it might be faster to move 8 byte chunks of data than smaller chunks.
 
 #### Makefile
 
